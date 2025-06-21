@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: casino;
+    src: url(assets/fonts/casino.ttf) format("truetype");
+}
+
+html, body {
+    box-sizing: border-box;
+    font-family: casino, open-sans, sans-serif;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    width: 100dvw;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+:root {
+    --primary-color: #009900;
+    --secondary-color: #222;
+    --text-color: whitesmoke;
+    --warn-color: #d20202;
+
+    --big-font-size: clamp(2rem, 2rem + 3dvw, 8rem);
+    --medium-font-size: clamp(1rem, 1rem + 2dvw, 4rem);
+    --small-font-size: clamp(0.5rem, 0.5rem + 1.5dvw, 2.5rem);
+}

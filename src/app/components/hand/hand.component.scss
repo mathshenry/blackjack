@@ -1,0 +1,24 @@
+:host {
+  display: flex;
+  height: clamp(200px, 20dvh, 30dvh);
+  margin-top: 2dvh;
+  position: relative;
+  width: 100dvw;
+  max-width: 800px;
+
+  .card {
+    --height: clamp(180px, 16dvh, 26dvh);
+    left: calc(var(--child-index) * 5% + 40%);
+    max-height: var(--height);
+    object-fit: contain;
+    position: absolute;
+    transform: translateX(calc(-50% - 8% * var(--child-index))) rotate(calc(var(--child-index) * 10deg - 20deg));
+    width: calc(var(--height) * 0.7);
+
+    @for $i from 1 through 11 {
+      &:nth-child(#{$i}) {
+          --child-index: #{$i};
+      }
+    }
+  }
+}

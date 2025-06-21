@@ -1,0 +1,17 @@
+<h3 class="message" [class.loading]="!showActions()">{{ message() }}</h3>
+@if(showActions()){
+<div class="buttons">
+  @if(isPlayerTurn() && !isGameOver()) {
+  <button @fadeIn class="button" (click)="hit.emit()">Hit</button>
+  <button @fadeIn class="button warn" (click)="stand.emit()">Stand</button>
+  } @else {
+  <button
+    @fadeIn
+    class="button"
+    (click)="restart.emit(); isStartText.set(false)"
+  >
+    {{ isStartText() ? "Start Game" : "Play Again" }}
+  </button>
+  }
+</div>
+}

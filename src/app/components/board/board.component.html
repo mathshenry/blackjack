@@ -1,0 +1,17 @@
+<h2 class="title">BLACKJACK</h2>
+
+<app-hand [hand]="gameService.dealerHand$()"></app-hand>
+
+<app-choices-board
+  [message]="gameService.message$()"
+  [isPlayerTurn]="gameService.isPlayerTurn$()"
+  [isGameOver]="gameService.isGameOver$()"
+  [showActions]="!gameService.isProcessing$()"
+  [playerWins]="gameService.playerHand$().isWinner"
+  [dealerWins]="gameService.dealerHand$().isWinner"
+  (hit)="gameService.playerHits()"
+  (stand)="gameService.playerStands()"
+  (restart)="gameService.startGame()"
+></app-choices-board>
+
+<app-hand [hand]="gameService.playerHand$()" [handDelay]="handDelay"></app-hand>

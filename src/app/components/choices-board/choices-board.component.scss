@@ -1,0 +1,98 @@
+:host {
+    align-items: center;
+    background-color: #222;
+    border-radius: 12px;
+    box-shadow: 0 0 5dvw var(--secondary-color);
+    color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
+    height: clamp(160px, 12dvh, 600px);
+    justify-content: center;
+    padding: 20px;
+    transition: all 1s ease-in-out;
+    width: clamp(250px, 60dvw, 800px);
+
+    &.player-won,
+    &.player-lost {
+        animation: bounce 0.5s ease-in-out normal;
+    }
+
+    &.player-won {
+        border: 5px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    &.player-lost {
+        border: 5px solid var(--warn-color);
+        color: var(--warn-color);
+
+        .buttons > .button {
+            background-color: var(--warn-color);
+            color: whitesmoke;
+        }
+    }
+
+    .message {
+        font-size: var(--medium-font-size);
+        font-weight: 400;
+        letter-spacing: 0.1rem;
+        margin: 0;
+        text-align: center;
+
+        &.loading {
+            animation: pulse 1s ease-in-out infinite;   
+        }
+    }
+
+    .buttons {
+        display: flex;
+        gap: 5dvw;
+        justify-content: center;
+        width: 100%;
+
+        .button {
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            border: none;
+            color: whitesmoke;
+            cursor: pointer;
+            font-family: casino;
+            font-size: var(--small-font-size);
+            height: clamp(40px, 4dvh, 6dvh);
+            letter-spacing: 0.2rem;
+            overflow: hidden;
+            padding: 1dvh 2dvh;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            width: fit-content;
+            
+
+            &.warn {
+                background-color: var(--warn-color);
+            }
+
+            &:hover {
+                opacity: 0.8;
+            }
+
+            &:active {
+                opacity: 1;
+                transform: scale(0.9);
+            }
+        }
+    }
+}
+
+@keyframes bounce {
+    from, to { transform: scale(1, 1); }
+    25% { transform: scale(0.9, 1.1); }
+    50% { transform: scale(1.1, 0.9); }
+    75% { transform: scale(0.95, 1.05); }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}

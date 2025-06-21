@@ -1,0 +1,20 @@
+:host {
+  align-items: center;
+  background-color: var(--primary-color);
+  box-shadow: inset 0 0 100dvw var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5dvh, 2dvh, 5dvh);
+  height: 100dvh;
+  justify-content: space-evenly;
+  width: 100dvw;
+
+  .title {
+    color: var(--secondary-color);
+    font-size: var(--big-font-size);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    margin: 1dvh 0 0;
+    text-align: center;
+  }
+}

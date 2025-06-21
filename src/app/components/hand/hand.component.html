@@ -1,0 +1,7 @@
+@for(card of hand()?.cards(); track card; let i = $index;) {
+<img
+  [@cardIn]="{ value: '', params: { delay: getDelay(i) } }"
+  class="card"
+  [src]="card.isFaceDown ? '/assets/images/cards/back.svg' : card.getImage()"
+/>
+}

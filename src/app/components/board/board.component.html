@@ -9,9 +9,16 @@
   [showActions]="!gameService.isProcessing$()"
   [playerWins]="gameService.playerHand$().isWinner"
   [dealerWins]="gameService.dealerHand$().isWinner"
+  [outOfMoney]="gameService.outOfMoney$()"
   (hit)="gameService.playerHits()"
   (stand)="gameService.playerStands()"
   (restart)="gameService.startGame()"
+  (reset)="gameService.resetScore()"
 ></app-choices-board>
 
 <app-hand [hand]="gameService.playerHand$()" [handDelay]="handDelay"></app-hand>
+<app-score
+  [chips]="gameService.playerHand$().chips()"
+  [score]="gameService.playerHand$().chipsScore()"
+  [chipsInBet]="gameService.chipsInBet$()"
+></app-score>

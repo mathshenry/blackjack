@@ -5,12 +5,8 @@
   <button @fadeIn class="button" (click)="hit.emit()">Hit</button>
   <button @fadeIn class="button warn" (click)="stand.emit()">Stand</button>
   } @else {
-  <button
-    @fadeIn
-    class="button"
-    (click)="restart.emit(); isStartText.set(false)"
-  >
-    {{ isStartText() ? "Start Game" : "Play Again" }}
+  <button @fadeIn class="button" (click)="restartClick()">
+    {{ buttonText() }}
   </button>
   }
 </div>

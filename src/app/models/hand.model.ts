@@ -1,6 +1,7 @@
 import { computed, signal, untracked } from '@angular/core';
 import { AceMaxValue, AceMinValue } from '../enums/ranks.enum';
 import { Card } from './card.model';
+import { env } from '../../environments/environment';
 
 export const BustValue = 21;
 export const DealerMustHitValue = 17;
@@ -8,10 +9,14 @@ export const DealerMustHitValue = 17;
 export class Hand {
   public readonly cards = signal<Card[]>([]);
   public readonly name = signal<string>('Player');
+  public readonly chips = signal<number>(0);
   public readonly isBusted = computed(() => this.value() > BustValue);
   public readonly isBlackjack = computed(
     () => this.cards().length === 2 && this.value() === BustValue
   );
+  public readonly chipsScore = computed(() => {
+    return this.chips() * env.chipValue;
+  });
   public readonly value = computed(() => {
     let totalValue = this.hardValue();
 
@@ -41,8 +46,9 @@ export class Hand {
     )
   );
 
-  public constructor(name: string) {
+  public constructor(name: string, initialChips = env.initialChips) {
     this.name.set(name);
+    this.chips.set(initialChips);
   }
 
   public turnAllCardsFaceUp(): void {
@@ -61,7 +67,13 @@ export class Hand {
     });
   }
 
-  public wins(): void {
+  public wins(chips = env.defaultBetSize): void {
     this.isWinner = true;
+    this.chips.update((ch) => ch + chips);
+  }
+
+  public loses(chips = env.defaultBetSize): void {
+    this.isWinner = false;
+    this.chips.update((ch) => ch - chips);
   }
 }

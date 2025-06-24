@@ -1,0 +1,18 @@
+<div class="score">
+  SCORE <br />
+  {{ score() }}
+</div>
+<div class="chips">
+  @for(chip of chipsList(); track chip){
+  <div
+    class="chip"
+    [@cardIn]="{
+      value: '',
+      params: { delay: defaultDelay, delayOut: defaultDelay * 2 }
+    }"
+    [class.bet]="chip.isBet()"
+  >
+    $
+  </div>
+  }
+</div>

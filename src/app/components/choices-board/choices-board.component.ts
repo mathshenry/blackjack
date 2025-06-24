@@ -1,10 +1,9 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
   effect,
   HostBinding,
-  inject,
   input,
   output,
   signal,
@@ -25,9 +24,11 @@ export class ChoicesBoardComponent {
   public readonly isGameOver = input<boolean>(false);
   public readonly playerWins = input<boolean>(false);
   public readonly dealerWins = input<boolean>(false);
+  public readonly outOfMoney = input<boolean>(false);
   public readonly hit = output<void>();
   public readonly stand = output<void>();
   public readonly restart = output<void>();
+  public readonly reset = output<void>();
 
   @HostBinding('class.player-won')
   protected playerWon = false;
@@ -35,22 +36,34 @@ export class ChoicesBoardComponent {
   @HostBinding('class.player-lost')
   protected playerLost = false;
 
-  protected isStartText = signal<boolean>(true);
+  protected readonly isStartText = signal<boolean>(true);
 
-  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly buttonText = computed(() =>
+    this.outOfMoney()
+      ? 'RESET'
+      : this.isStartText()
+      ? 'Start Game'
+      : 'Play Again'
+  );
 
   constructor() {
     this.watchForPlayerWins();
     this.watchForPlayerLoses();
   }
 
-  watchForPlayerWins() {
+  protected restartClick() {
+    this.isStartText.set(false);
+    const output = this.outOfMoney() ? this.reset : this.restart;
+    output.emit();
+  }
+
+  private watchForPlayerWins() {
     effect(() => {
       this.playerWon = this.playerWins();
     });
   }
 
-  watchForPlayerLoses() {
+  private watchForPlayerLoses() {
     effect(() => {
       this.playerLost = this.dealerWins();
     });

@@ -1,4 +1,11 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import {
+  computed,
+  effect,
+  Injectable,
+  signal,
+  untracked,
+  WritableSignal,
+} from '@angular/core';
 import { env } from '../../environments/environment';
 import { messages } from '../messages';
 import { Deck } from '../models/deck.model';
@@ -16,6 +23,7 @@ export class GameService {
   private readonly message = signal<string>(messages.welcome);
   private readonly isProcessing = signal<boolean>(false);
   private readonly isGameOver = signal<boolean>(true);
+  private readonly chipsInBet = signal<number>(0);
 
   public readonly playerHand$ = this.playerHand.asReadonly();
   public readonly dealerHand$ = this.dealerHand.asReadonly();
@@ -23,13 +31,28 @@ export class GameService {
   public readonly message$ = this.message.asReadonly();
   public readonly isGameOver$ = this.isGameOver.asReadonly();
   public readonly isProcessing$ = this.isProcessing.asReadonly();
+  public readonly chipsInBet$ = this.chipsInBet.asReadonly();
+  public readonly outOfMoney$ = computed(
+    () => this.playerHand$().chips() < env.defaultBetSize
+  );
+
+  constructor() {
+    this.watchOutOfMoney();
+  }
 
   public async startGame(): Promise<void> {
-    this.resetGame();
-    await this.dealInitialCards();
-    this.message.set(messages.playerTurn);
-    this.checkBlackjack();
-    this.isProcessing.set(false);
+    if (this.setBet()) {
+      this.resetGame();
+      await this.dealInitialCards();
+      this.message.set(messages.playerTurn);
+      this.checkBlackjack();
+      this.isProcessing.set(false);
+    }
+  }
+
+  public resetScore(): void {
+    this.playerHand$().chips.set(env.initialChips);
+    this.message.set(messages.welcome);
   }
 
   public async playerStands(): Promise<void> {
@@ -67,9 +90,27 @@ export class GameService {
 
     if (this.playerHand().isBusted()) {
       this.gameOver(messages.playerBusted);
-      this.dealerHand().wins();
+      this.dealerWins();
       return;
     }
+  }
+
+  private watchOutOfMoney(): void {
+    effect(() => {
+      if (this.outOfMoney$()) {
+        untracked(() => {
+          this.message.set(messages.outOfMoney);
+        });
+      }
+    });
+  }
+
+  private setBet(): boolean {
+    if (!this.outOfMoney$()) {
+      this.chipsInBet.set(env.defaultBetSize);
+    }
+
+    return !this.outOfMoney$();
   }
 
   private checkBlackjack(): void {
@@ -79,13 +120,13 @@ export class GameService {
     }
 
     if (this.playerHand().isBlackjack()) {
-      this.playerHand().wins();
+      this.playerWins();
       this.gameOver(messages.playerBlackjack);
       return;
     }
 
     if (this.dealerHand().isBlackjack()) {
-      this.dealerHand().wins();
+      this.dealerWins();
       this.gameOver(messages.dealerBlackjack);
     }
   }
@@ -95,6 +136,7 @@ export class GameService {
     this.playerTurn.set(false);
     this.message.set(message);
     this.dealerHand().turnAllCardsFaceUp();
+    this.chipsInBet.set(0);
   }
 
   private async dealInitialCards(): Promise<void> {
@@ -142,28 +184,41 @@ export class GameService {
     const dealerValue = this.dealerHand().value();
 
     if (dealerValue > BustValue) {
-      this.playerHand().wins();
+      this.playerWins();
       this.message.set(messages.dealerBusted);
       return;
     }
 
     if (playerValue > dealerValue) {
-      this.playerHand().wins();
+      this.playerWins();
       this.message.set(messages.playerWins);
       return;
     }
 
     if (dealerValue > playerValue) {
       this.message.set(messages.dealerWins);
-      this.dealerHand().wins();
+      this.dealerWins();
       return;
     }
 
     this.message.set(messages.push);
   }
 
-  private resetGame(): void {
-    this.playerHand.set(new Hand(PlayerName));
+  private playerWins(): void {
+    this.playerHand$().wins();
+    this.chipsInBet.set(0);
+  }
+
+  private dealerWins(): void {
+    this.dealerHand$().wins();
+    this.playerHand$().loses();
+    this.chipsInBet.set(0);
+  }
+
+  private resetGame(keepScore = true): void {
+    this.playerHand.set(
+      new Hand(PlayerName, keepScore ? this.playerHand().chips() : undefined)
+    );
     this.dealerHand.set(new Hand(DealerName));
     this.deck.set(new Deck());
     this.message.set(messages.welcome);

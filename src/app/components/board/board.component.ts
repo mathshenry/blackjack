@@ -5,10 +5,16 @@ import { messages } from '../../messages';
 import { GameService } from '../../services/game.service';
 import { ChoicesBoardComponent } from '../choices-board/choices-board.component';
 import { HandComponent } from '../hand/hand.component';
+import { ScoreComponent } from '../score/score.component';
 
 @Component({
   selector: 'app-board',
-  imports: [HandComponent, ChoicesBoardComponent, ChoicesBoardComponent],
+  imports: [
+    HandComponent,
+    ChoicesBoardComponent,
+    ChoicesBoardComponent,
+    ScoreComponent,
+  ],
   providers: [GameService],
   templateUrl: `./board.component.html`,
   standalone: true,

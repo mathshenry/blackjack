@@ -1,40 +1,40 @@
 :host {
+  bottom: 2dvh;
   display: flex;
   flex-direction: column-reverse;
-  position: absolute;
-  bottom: 2dvh;
-  right: 2dvw;
   gap: 1dvh;
+  position: absolute;
+  right: 2dvw;
 
   .chips {
     --chip-size: 8dvh;
+    align-items: flex-end;
     display: flex;
     flex-direction: column-reverse;
-    position: relative;
-    align-items: flex-end;
     height: 100svh;
+    position: relative;
 
     .chip {
-      height: var(--chip-size);
-      width: var(--chip-size);
-      border-radius: 50%;
-      background-color: var(--warn-color);
-      border: 6px double var(--secondary-color);
-      text-align: center;
       align-content: center;
-      font-size: calc(var(--chip-size) * 0.7);
+      background-color: var(--warn-color);
+      border-radius: 50%;
+      border: 6px double var(--secondary-color);
+      bottom: 0;
       box-shadow: 0 0 1dvw var(--secondary-color);
-      right: 0;
+      font-size: calc(var(--chip-size) * 0.7);
+      height: var(--chip-size);
       overflow: hidden;
       position: relative;
+      right: 0;
+      text-align: center;
       transition: all 1s;
-      bottom: 0;
+      width: var(--chip-size);
 
       &.bet,
       &.dealer-bet {
+        animation: rotate 2s infinite;
         bottom: 20dvh;
         right: 2dvw;
-        animation: rotate 2s infinite;
       }
       
       &:not(:first-child){
@@ -48,12 +48,7 @@
       }
 
       &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        transform: translateX(-100%);
+        animation: shimmer 3s infinite;
         background-image: linear-gradient(
           90deg,
           rgba(#fff, 0) 0,
@@ -61,8 +56,13 @@
           rgba(#fff, 0.5) 60%,
           rgba(#fff, 0)
         );
-        animation: shimmer 3s infinite;
+        bottom: 0;
         content: '';
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translateX(-100%);
       }
     }
   }

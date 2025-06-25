@@ -28,6 +28,10 @@ export class ScoreComponent {
 
   constructor() {
     this.createBasicChips();
+    this.watchBetSize();
+  }
+
+  private watchBetSize() {
     effect(() => {
       const betSize = this.chipsInBet();
       const chipsLength = this.chips();

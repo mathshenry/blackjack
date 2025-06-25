@@ -4,10 +4,16 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Development server
 
+After cloning the repo, if it's the first time running the project, run:
+
+```bash
+npm install
+```
+
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
@@ -17,7 +23,7 @@ Once the server is running, open your browser and navigate to `http://localhost:
 To build the project run:
 
 ```bash
-ng build
+npm run build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
@@ -27,8 +33,90 @@ This will compile your project and store the build artifacts in the `dist/` dire
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
 ```bash
-ng test
+npm run test
 ```
+
+## 🧩 Project Components Overview
+
+### `BoardComponent`
+
+- **File:** board.component.ts
+- **Description:**  
+  The main game container. It orchestrates the game flow and layout, providing the structure for the player and dealer hands, the score display, and the choices board. It injects the `GameService` to manage game state and actions.
+
+---
+
+### `HandComponent`
+
+- **File:** hand.component.ts
+- **Description:**  
+  Displays a hand of cards (either the player's or the dealer's). Handles the animation and delay logic for dealing cards, and receives a `Hand` model as input. Used for both the player and dealer hands.
+
+---
+
+### `ScoreComponent`
+
+- **File:** score.component.ts
+- **Description:**  
+  Shows the current score and the player's chips. Animates chips as they are bet or won/lost. Reacts to changes in the number of chips and bet size, and visually distinguishes chips that are currently in play.
+
+---
+
+### `ChoicesBoardComponent`
+
+- **File:** choices-board.component.ts
+- **Description:**  
+  Renders the action buttons (Hit, Stand, Restart, etc.) and game messages. Handles user input for game actions and displays contextual messages (e.g., win/loss, out of money). Also manages button states and animations based on the game state.
+
+---
+
+## 🗂️ Architecture Overview (Mermaid format)
+
+```mermaid
+graph TD
+  subgraph Components
+    Board(BoardComponent)
+    Hand(HandComponent)
+    Score(ScoreComponent)
+    Choices(ChoicesBoardComponent)
+  end
+
+  subgraph Services
+    GameService(GameService)
+  end
+
+  subgraph Models
+    HandModel(Hand)
+    CardModel(Card)
+    DeckModel(Deck)
+    ChipInfoModel(ChipInfo)
+  end
+
+  Board -->|uses| Hand
+  Board -->|uses| Score
+  Board -->|uses| Choices
+  Board -->|injects| GameService
+
+  Hand -->|input: Hand| HandModel
+  Score -->|input: chips, score| ChipInfoModel
+  Choices -->|input: state, output: events| GameService
+
+  GameService -->|manages| HandModel
+  GameService -->|manages| DeckModel
+  GameService -->|manages| ChipInfoModel
+  HandModel -->|contains| CardModel
+  DeckModel -->|contains| CardModel
+```
+
+### **How to read this diagram:**
+
+- **BoardComponent** is the main container and uses the other components.
+- **GameService** is injected into BoardComponent and manages the game state.
+- **HandComponent** receives a `Hand` model as input.
+- **ScoreComponent** displays chip and score info, using `ChipInfo`.
+- **ChoicesBoardComponent** interacts with the service for game actions.
+- **GameService** manages the main models: `Hand`, `Deck`, and `ChipInfo`.
+- **Hand** and **Deck** both contain `Card` objects.
 
 ## 🃏 Blackjack - Game Rules and How to Play
 
@@ -78,7 +166,7 @@ The goal of Blackjack is to beat the dealer by having a hand value as close to *
 
      - The dealer reveals their hidden card.
      - The dealer **must hit** until their hand value is **17 or higher**.
-     - The dealer **must stand** on **17 or more** (including "soft 17", depending on house rules – your version can clarify this).
+     - The dealer **must stand** on **17 or more**.
 
 4. **Determine the Outcome**
 
@@ -94,12 +182,11 @@ The goal of Blackjack is to beat the dealer by having a hand value as close to *
 ### 🏆 Blackjack
 
 - If the player's **first two cards** total **21** (Ace + 10-point card), it is a **Blackjack**.
-- Blackjack usually beats a 21 achieved through additional cards.
-- Optionally, you can implement a **3:2 payout** for Blackjack.
+- A natural Blackjack (Ace + 10-point card) beats a 21 achieved with more than two cards.
 
 ---
 
-### ✋ Optional Rules (Advanced Features)
+### ✋ Optional Rules (Advanced Features) [NOT IMPLEMENTED YET - FUTURE VERSIONS]
 
 You may optionally implement these features in future versions:
 
@@ -113,3 +200,9 @@ You may optionally implement these features in future versions:
 ### Content Sources
 
 **Cards SVGs taken from https://www.me.uk/cards/makeadeck.cgi?view**
+
+**Github Copilot has been used in helping creating this documentation as well as test cases for the unit tests**
+
+**No advanced libraries for state management (such as NGRX) have been used, as it's a simple application**
+
+**This application runs as a standalone, without the need of a backend service -- If it was ever needed to have a multiplayer game, to avoid cheating, multiple services implemented here would be moved to the backend**

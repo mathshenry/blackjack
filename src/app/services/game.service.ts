@@ -16,10 +16,10 @@ export const DealerName = 'Dealer';
 
 @Injectable()
 export class GameService {
-  private deck = signal<Deck>(new Deck());
-  private playerHand = signal<Hand>(new Hand(PlayerName));
-  private dealerHand = signal<Hand>(new Hand(DealerName));
-  private playerTurn = signal<boolean>(true);
+  private readonly deck = signal<Deck>(new Deck());
+  private readonly playerHand = signal<Hand>(new Hand(PlayerName));
+  private readonly dealerHand = signal<Hand>(new Hand(DealerName));
+  private readonly playerTurn = signal<boolean>(true);
   private readonly message = signal<string>(messages.welcome);
   private readonly isProcessing = signal<boolean>(false);
   private readonly isGameOver = signal<boolean>(true);
